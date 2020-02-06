@@ -45,291 +45,34 @@ Resume3<-ddply(ES2, .(Sample, SiteN, Spp, Month, Year, Element),
 
 write.table(ES2, "Resume3.csv", quote=F, sep = ",", row.names=F)
 
-#Plot metals by site
-Al<- Resume3[Resume3$Element=="Al",]
-As<- Resume3[Resume3$Element=="As",]
-Ca<- Resume3[Resume3$Element=="Ca",]
-Cl<- Resume3[Resume3$Element=="Cl",]
-Cu<- Resume3[Resume3$Element=="Cu",]
-Fe<- Resume3[Resume3$Element=="Fe",]
-K<- Resume3[Resume3$Element=="K",]
-Mg<- Resume3[Resume3$Element=="Mg",]
-Mn<- Resume3[Resume3$Element=="Mn",]
-Mo<- Resume3[Resume3$Element=="Mo",]
-P<- Resume3[Resume3$Element=="P",]
-Pb<- Resume3[Resume3$Element=="Pb",]
-Rb<- Resume3[Resume3$Element=="Rb",]
-S<- Resume3[Resume3$Element=="S",]
-Si<- Resume3[Resume3$Element=="Si",]
-Sr<- Resume3[Resume3$Element=="Sr",]
-Th<- Resume3[Resume3$Element=="Th",]
-U<- Resume3[Resume3$Element=="U",]
-V<- Resume3[Resume3$Element=="V",]
-Zn<- Resume3[Resume3$Element=="Zn",]
+# Code for figure 2
+Sel<- Resume3[Resume3$Element=="As"| Resume3$Element=="Al"|Resume3$Element=="Ca"|
+                  Resume3$Element=="Cl"|Resume3$Element=="K"|Resume3$Element=="Mg"|
+                  Resume3$Element=="Mn"|Resume3$Element=="P"| Resume3$Element=="Rb"|
+                  Resume3$Element=="S"|Resume3$Element=="Si"| Resume3$Element=="Sr"|
+                  Resume3$Element=="Th"|Resume3$Element=="U",]
 
-# Make dotplot for each element 
-ggplot(Al, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 140),
-               linetype = 2,
-               col="blue")+
+## define custom median function
+plot.median <- function(x) {
+    m <- median(x)
+    c(y = m, ymin = m, ymax = m)
+}
+
+ggplot(Sel, aes(x=SiteN, y=Median, fill=Spp)) +
+    geom_dotplot(binaxis='y', stackdir='center', dotsize=3)+
     labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 550))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
+    facet_wrap(~Element, scales = "free", ncol = 3)+
+    theme_minimal()+
+    theme(legend.position = c(0.85,0.06), 
+          axis.text=element_text(size=12),
+          axis.title.x = element_text(size=16, face="bold"),
+          axis.title.y = element_text (size=16, face="bold"),
+          strip.text.x = element_text(size = 14, colour = "red", face ="bold"))+
+    labs(fill='Species/Morphotype')+
+    stat_summary(fun.data="plot.median", geom="errorbar", 
+                 colour="black", width=0.7, size=1.5, mapping = aes(group = SiteN))
 
-ggplot(As, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 4),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 180))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(Ca, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 394),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 150000))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(Cl, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 266),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 55000))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(Cu, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 6),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 550))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(Fe, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 3),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 15))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(K, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 333),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 50000))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(Mg, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 2915),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 15000))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(Mn, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 13),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 150))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(Mo, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 1),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 10))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(P, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 145),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 450))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(Pb, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 2),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 5))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(Rb, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 1),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 150))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(S, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 199),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 30000))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(Si, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 342),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 3000))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(Sr, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 6),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 3000))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-
-ggplot(Th, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 1),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 25))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(U, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 4),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 50))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(V, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 3),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 15))+
-    theme(legend.position = "none", 
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-ggplot(Zn, aes(x=SiteN, y=Median, fill=Spp)) +
-    geom_boxplot(fill="white")+
-    geom_dotplot(binaxis='y', stackdir='center')+
-    geom_hline(aes(yintercept = 5),
-               linetype = 2,
-               col="blue")+
-    labs(x = "Site", y ="Concentration (ppm DW)")+
-    scale_y_continuous(expand = c(0, 0), limits = c(0, 20))+
-    theme(legend.position = "none",
-          axis.text=element_text(size=14),
-          axis.title.x = element_text(size=14, face="bold"),
-          axis.title.y = element_text (size=14, face="bold"))
-
-#New Table for Sargassum forms (withouT Sargassum spp)
+#Comparison between Sargassum forms (without Sargassum spp)
 Spp<-ddply(ES2, .(SiteN, Sample, Spp, Element), 
               summarise, Median= median(Value, na.rm=TRUE))
 
@@ -346,33 +89,33 @@ write.table(ElemSpp2, "ElemSpp.csv", quote=F, sep = ",", row.names=F)
 ElemSpp3= read.csv("ElemSpp.csv", sep = ",") 
 
 
-Al2<- ElemSpp[ElemSpp$Element=="Al",]
-As2<- ElemSpp[ElemSpp$Element=="As",]
-Ca2<- ElemSpp[ElemSpp$Element=="Ca",]
-Cl2<- ElemSpp[ElemSpp$Element=="Cl",]
-Cu2<- ElemSpp[ElemSpp$Element=="Cu",]
-Fe2<- ElemSpp[ElemSpp$Element=="Fe",]
-K2<- ElemSpp[ElemSpp$Element=="K",]
-Mg2<- ElemSpp[ElemSpp$Element=="Mg",]
-Mn2<- ElemSpp[ElemSpp$Element=="Mn",]
-Mo2<- ElemSpp[ElemSpp$Element=="Mo",]
-P2<- ElemSpp[ElemSpp$Element=="P",]
-Pb2<- ElemSpp[ElemSpp$Element=="Pb",]
-Rb2<- ElemSpp[ElemSpp$Element=="Rb",]
-S2<- ElemSpp[ElemSpp$Element=="S",]
-Si2<- ElemSpp[ElemSpp$Element=="Si",]
-Sr2<- ElemSpp[ElemSpp$Element=="Sr",]
-Th2<- ElemSpp[ElemSpp$Element=="Th",]
-U2<- ElemSpp[ElemSpp$Element=="U",]
+Al<- ElemSpp[ElemSpp$Element=="Al",]
+As<- ElemSpp[ElemSpp$Element=="As",]
+Ca<- ElemSpp[ElemSpp$Element=="Ca",]
+Cl<- ElemSpp[ElemSpp$Element=="Cl",]
+Cu<- ElemSpp[ElemSpp$Element=="Cu",]
+Fe<- ElemSpp[ElemSpp$Element=="Fe",]
+K<- ElemSpp[ElemSpp$Element=="K",]
+Mg<- ElemSpp[ElemSpp$Element=="Mg",]
+Mn<- ElemSpp[ElemSpp$Element=="Mn",]
+Mo<- ElemSpp[ElemSpp$Element=="Mo",]
+P<- ElemSpp[ElemSpp$Element=="P",]
+Pb- ElemSpp[ElemSpp$Element=="Pb",]
+Rb<- ElemSpp[ElemSpp$Element=="Rb",]
+S<- ElemSpp[ElemSpp$Element=="S",]
+Si<- ElemSpp[ElemSpp$Element=="Si",]
+Sr<- ElemSpp[ElemSpp$Element=="Sr",]
+Th<- ElemSpp[ElemSpp$Element=="Th",]
+U<- ElemSpp[ElemSpp$Element=="U",]
 V2<- ElemSpp[ElemSpp$Element=="V",]
 Zn2<- ElemSpp[ElemSpp$Element=="Zn",]
 
 # Kruskal-Wallis rank sum test (change element)
 library (pgirmess) 
-kruskal.test(Al2$Median~Al2$Spp)
-kruskalmc(Al2$Median~ Al2$Spp) 
+kruskal.test(Al$Median~Al$Spp)
+kruskalmc(Al$Median~ Al$Spp) 
 
-#Compare months for Puerto Morelos
+#Code for Figure 3 - Comparison among months for Puerto Morelos site
 PM<- ESM[ESM$SiteN=="3",]
 Month <- ddply(PM, .(Element,Month), summarise, 
                Median = median (Median))
